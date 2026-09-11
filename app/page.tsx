@@ -20,15 +20,15 @@ export default async function HomePage() {
 
   return (
     <main className="max-w-3xl mx-auto px-6 pt-16 pb-12">
-      <section className="mb-14">
+      <section className="mb-14 rounded-2xl bg-gradient-to-br from-stone-200/80 via-stone-100 to-transparent p-8 sm:p-10">
         <p className="font-mono text-xs uppercase tracking-widest text-stone-400 mb-3">
           Knowledge Base & Dossiers
         </p>
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-stone-900 mb-4">
-          Tactical playbooks from modern technology leaders.
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4 bg-gradient-to-r from-stone-900 to-stone-600 bg-clip-text text-transparent">
+          Deep tech knowledge, distilled for builders.
         </h1>
-        <p className="text-base text-stone-600 leading-relaxed font-normal">
-          Long-form video interviews distilled into structured mental models, execution checklists, and strategic frameworks.
+        <p className="text-base text-stone-700 leading-relaxed font-normal">
+          The best product, engineering, and leadership videos on the web—synthesized into clear mental models, core principles, and strategic frameworks.
         </p>
       </section>
 
@@ -62,7 +62,7 @@ export default async function HomePage() {
                   <span className="font-mono text-xs text-stone-400">
                     {dateFormatted}
                   </span>
-                  <span className="text-xs text-stone-400 group-hover:text-stone-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all inline-flex items-center gap-1 font-mono">
+                  <span className="text-xs text-red-500 group-hover:text-red-700 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all inline-flex items-center gap-1 font-mono">
                     Read Guide <ArrowUpRight className="w-3 h-3" />
                   </span>
                 </div>
