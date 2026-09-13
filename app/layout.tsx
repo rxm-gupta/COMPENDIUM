@@ -71,7 +71,7 @@ export default function RootLayout({
                 Synthesized Daily
               </span>
               <a
-                href="https://github.com/rxm-gupta"
+                href="https://github.com/rxm-gupta/COMPENDIUM"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-stone-800 hover:text-black transition-colors"
