@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
+import { Github } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +28,8 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#fafaf9] text-[#1c1917] flex flex-col selection:bg-stone-200 selection:text-stone-900">
         <header className="border-b border-stone-200/80 bg-[#fafaf9]/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-            <Link href="/" className="group flex items-center space-x-2.5">
+            {/* Replaced <Link> with standard <a> tag to force a hard browser refresh */}
+            <a href="/" className="group flex items-center space-x-2.5">
               <svg
                 width="24"
                 height="24"
@@ -62,11 +63,22 @@ export default function RootLayout({
               <span className="font-mono text-xs tracking-[0.2em] font-bold text-stone-900 uppercase">
                 Compendium
               </span>
-            </Link>
+            </a>
+            
+            {/* Right side header items */}
             <div className="flex items-center space-x-4">
               <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-stone-200 text-[11px] font-mono text-stone-500 bg-white">
                 Synthesized Daily
               </span>
+              <a
+                href="https://github.com/rxm-gupta"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-stone-800 hover:text-black transition-colors"
+                title="View my GitHub"
+              >
+                <Github className="w-[18px] h-[18px]" fill="currentColor" />
+              </a>
             </div>
           </div>
         </header>

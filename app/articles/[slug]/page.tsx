@@ -43,6 +43,14 @@ export default async function ArticlePage({ params }: PageProps) {
 
       <header className="mb-12 pb-8 border-b border-stone-200/80">
         <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-stone-400 mb-4">
+          {article.channel_name && (
+            <>
+              <span className="text-stone-600 font-medium">
+                {article.channel_name.trim()}
+              </span>
+              <span>•</span>
+            </>
+          )}
           <time dateTime={article.created_at}>{publishedDate}</time>
           <span>•</span>
           <span>Tactical Synthesis</span>
