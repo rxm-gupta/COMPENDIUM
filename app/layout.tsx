@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { Github } from "lucide-react";
 
@@ -28,8 +29,8 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#fafaf9] text-[#1c1917] flex flex-col selection:bg-stone-200 selection:text-stone-900">
         <header className="border-b border-stone-200/80 bg-[#fafaf9]/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-            {/* Replaced <Link> with standard <a> tag to force a hard browser refresh */}
-            <a href="/" className="group flex items-center space-x-2.5">
+            {/* Next.js Link routes directly to the home page */}
+            <Link href="/" className="group flex items-center space-x-2.5">
               <svg
                 width="24"
                 height="24"
@@ -63,7 +64,7 @@ export default function RootLayout({
               <span className="font-mono text-xs tracking-[0.2em] font-bold text-stone-900 uppercase">
                 Compendium
               </span>
-            </a>
+            </Link>
             
             {/* Right side header items */}
             <div className="flex items-center space-x-4">

@@ -15,21 +15,43 @@ export interface Article {
 
 const normalize = (name: string) => name.trim().toLowerCase();
 
-// Added "= []" fallback to prevent undefined array crashes
-export default function ArticleFeed({ articles = [] }: { articles: Article[] }) {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
+// Formats date identically on server and client using UTC
+const formatDate = (dateStr: string) => {
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+  } catch {
+    return dateStr.split('T')[0];
+  }
+};
 
-  // 1. Check memory for a saved filter when the user navigates back
-  useEffect(() => {
-    const savedFilter = sessionStorage.getItem('compendium_channel_filter');
-    if (savedFilter) {
-      setSelected(savedFilter);
+export default function ArticleFeed({ articles = [] }: { articles: Article[] }) {
+  // 1. Synchronously initialize state from sessionStorage to eliminate the paint flash
+  const [selected, setSelected] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('compendium_channel_filter');
     }
-    setIsMounted(true);
+    return null;
+  });
+
+  useEffect(() => {
+    // Reset filter back to "All" whenever the user clicks the Compendium home logo
+    const handleHomeClick = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest('a[href="/"]');
+      if (anchor) {
+        sessionStorage.removeItem('compendium_channel_filter');
+        setSelected(null);
+      }
+    };
+
+    document.addEventListener('click', handleHomeClick);
+    return () => document.removeEventListener('click', handleHomeClick);
   }, []);
 
-  // 2. Save the filter to memory whenever a pill is clicked
   const handleFilterChange = (key: string | null) => {
     setSelected(key);
     if (key) {
@@ -41,8 +63,6 @@ export default function ArticleFeed({ articles = [] }: { articles: Article[] }) 
 
   const channels = useMemo(() => {
     const map = new Map<string, string>();
-    
-    // Safety check: if articles is undefined, return empty array immediately
     if (!articles || !Array.isArray(articles)) return [];
 
     articles.forEach((a) => {
@@ -51,7 +71,7 @@ export default function ArticleFeed({ articles = [] }: { articles: Article[] }) 
       const key = normalize(raw);
       if (!map.has(key)) map.set(key, raw);
     });
-    
+
     return Array.from(map, ([key, label]) => ({ key, label }));
   }, [articles]);
 
@@ -70,19 +90,22 @@ export default function ArticleFeed({ articles = [] }: { articles: Article[] }) 
     );
   }
 
+  const pillClass = (active: boolean) =>
+    `px-3 py-1 rounded-full text-xs font-mono transition-colors duration-150 border cursor-pointer select-none ${
+      active
+        ? 'bg-stone-900 text-stone-50 border-stone-900 shadow-sm'
+        : 'bg-transparent text-stone-600 border-stone-200 hover:border-stone-400 hover:text-stone-900'
+    }`;
+
   return (
-    <div>
+    <div suppressHydrationWarning>
       {/* Top Filter Pills */}
       {channels.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 pb-6 mb-2">
           <button
             type="button"
             onClick={() => handleFilterChange(null)}
-            className={`px-3 py-1 rounded-full text-xs font-mono transition-all border cursor-pointer select-none ${
-              selected === null
-                ? 'bg-stone-900 text-stone-50 border-stone-900 shadow-sm'
-                : 'bg-transparent text-stone-600 border-stone-200 hover:border-stone-400 hover:text-stone-900'
-            }`}
+            className={pillClass(selected === null)}
           >
             All
           </button>
@@ -94,11 +117,7 @@ export default function ArticleFeed({ articles = [] }: { articles: Article[] }) 
                 key={key}
                 type="button"
                 onClick={() => handleFilterChange(isActive ? null : key)}
-                className={`px-3 py-1 rounded-full text-xs font-mono transition-all border cursor-pointer select-none ${
-                  isActive
-                    ? 'bg-stone-900 text-stone-50 border-stone-900 shadow-sm'
-                    : 'bg-transparent text-stone-600 border-stone-200 hover:border-stone-400 hover:text-stone-900'
-                }`}
+                className={pillClass(isActive)}
               >
                 {label}
               </button>
@@ -117,14 +136,6 @@ export default function ArticleFeed({ articles = [] }: { articles: Article[] }) 
           </div>
         ) : (
           filtered.map((article) => {
-            const dateFormatted = isMounted
-              ? new Date(article.created_at).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })
-              : '';
-
             const channel = article.channel_name?.trim();
             const channelKey = channel ? normalize(channel) : null;
 
@@ -149,7 +160,7 @@ export default function ArticleFeed({ articles = [] }: { articles: Article[] }) 
                         <span>•</span>
                       </>
                     )}
-                    <span>{dateFormatted}</span>
+                    <span>{formatDate(article.created_at)}</span>
                   </div>
 
                   <Link
